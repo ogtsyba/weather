@@ -9,7 +9,10 @@ export class MongodbClient {
     public readonly db: Db,
   ) {}
 
-  static async init(url: string, opts?: MongoClientOptions): Promise<MongodbClient> {
+  static async initSingle(
+    url: string,
+    opts?: MongoClientOptions,
+  ): Promise<MongodbClient> {
     if (mongodbClient) {
       return mongodbClient;
     }
@@ -18,7 +21,7 @@ export class MongodbClient {
     await client.connect();
     const db = client.db();
 
-    logger.error({ dbName: db.databaseName }, "Mongodb client connected");
+    logger.info({ dbName: db.databaseName }, "Mongodb client connected");
     mongodbClient = new MongodbClient(client, db);
 
     return mongodbClient;

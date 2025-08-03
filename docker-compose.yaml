@@ -3,11 +3,25 @@ services:
     build:
       context: ./weather-frontend
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
+      target: development
     volumes:
       - ./weather-frontend/src:/home/node/app/src
     command: ["npm", "start"]
+    networks:
+      default: { ipv4_address: 10.23.1.0 }
+    depends_on:
+      - weather-change-aggregator
+
+  # run under "https://app-hostname/next" path
+  weather-next:
+    build:
+      context: ./weather-next
+      dockerfile: Dockerfile
+    volumes:
+      - ./weather-next/src:/home/node/app/src
+    command: ["npm", "run", "dev"]
+    networks:
+      default: { ipv4_address: 10.23.1.1 }
     depends_on:
       - weather-change-aggregator
 
@@ -22,9 +36,9 @@ services:
       WA_MONGODB_URL: "mongodb://mongo/weather-change-aggregator"
       WA_LOGGER_LEVEL: "info"
       WA_SYNC_MS: 20000
-    ports:
-      - 3001:3000
     command: ["npm", "run", "start:watch"]
+    networks:
+      default: { ipv4_address: 10.23.2.10 }
     volumes:
       - ./weather-change-aggregator/src:/home/node/app/src
     depends_on:
@@ -40,11 +54,18 @@ services:
   mongo:
     init: true
     image: mongo:8-noble
-    ports:
-      - 27017:27017
+    networks:
+      default: { ipv4_address: 10.23.0.10 }
     volumes: [ "mongodb:/data/db", "mongodb-config:/data/configdb" ]
 
 volumes:
   mongodb:
   mongodb-config:
 
+networks:
+  default:
+    name: ww-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.23.0.0/16

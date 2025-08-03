@@ -18,7 +18,7 @@ let mongodb: MongodbClient;
 describe("Weather API E2E Tests", () => {
   beforeAll(async () => {
     server = await runExpress();
-    mongodb = await MongodbClient.init(process.env.WA_MONGODB_URL as string);
+    mongodb = await MongodbClient.initSingle(process.env.WA_MONGODB_URL as string);
   });
 
   afterAll(async () => {

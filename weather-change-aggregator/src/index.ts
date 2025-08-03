@@ -1,5 +1,5 @@
-import WebSocket from "ws";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type WebSocket from "ws";
 import { WsServer } from "./servers/ws.server";
 import { HttpServer } from "./servers/http.server";
 import { WeatherHttpController } from "./weather/weather.http.controller";

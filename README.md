@@ -12,12 +12,15 @@
 ## Project setup
 
 ```bash
+# Setup DNS resolution
+cat <<EOF | sudo tee -a /etc/hosts
+10.23.1.0 weather
+10.23.2.10 api.weather
+EOF
+
 docker compose up --build
 ```
 
-Frontend available on "http://localhost:3000"
-Backend available on "http://localhost:3001"
-You can configure ports in `docker-compose.yaml` `portj` parameter
 
 To configure the Backend app settings, use env variables.
 You can modify them in `docker-compose.yaml`

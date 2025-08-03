@@ -24,10 +24,8 @@ export class WeatherListService {
 
     const result = await this.weatherSnapshotRepo.findMany(search);
 
-    console.error(result);
-
     this.logger.debug(result, "[WeatherListService] result");
-    this.logger.info(result, "[WeatherListService] done successfully");
+    this.logger.info({ input }, "[WeatherListService] done successfully");
 
     return result;
   }

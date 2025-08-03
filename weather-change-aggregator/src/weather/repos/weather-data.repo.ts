@@ -15,13 +15,13 @@ export class WeatherDataRepo {
   constructor(
     protected readonly logger: pino.Logger,
     protected readonly mongoClient: MongodbClient,
-    protected readonly syncMs: number = 60 * 1000,
+    protected readonly syncMs: number = 10 * 1000,
   ) {}
 
   static async init() {
     const config = ConfigService.init();
     const { logger } = LoggerService.init();
-    const mongodbClient = await MongodbClient.init(config.mongodb.url);
+    const mongodbClient = await MongodbClient.initSingle(config.mongodb.url);
 
     return new this(logger, mongodbClient, config.syncMS);
   }
