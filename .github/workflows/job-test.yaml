@@ -1,0 +1,72 @@
+name: test.yaml
+
+on:
+  workflow_call: {}
+#   inputs:
+#     hz:
+#       required: false
+#       type: string
+#   secrets:
+#     FOO:
+#       required: false
+
+jobs:
+  test:
+    # https://docs.github.com/en/actions/tutorials/communicating-with-docker-service-containers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    services: # service containers to run with the job
+      postgres:
+        image: mongo:8-noble
+        env:
+        # Set health checks to wait until postgres has started
+        # https://docs.docker.com/reference/cli/docker/container/create/#options
+        options: >-
+          --health-cmd mongosh --quiet --eval 'db.adminCommand({ ping: 1 })'
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # We don't need to specify a host port; GitHub Actions maps it
+          # and makes it accessible via the service label hostname ('postgres') on port 5432
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build Dev Docker image
+        uses: docker/build-push-action@v5
+        id: build_dev
+        with:
+          context: ./weather-change-aggregator
+          push: false
+          load: true
+          tags: weather-change-aggregator:development
+          cache-from: type=gha # Enable GitHub Actions cache for Docker layers
+          cache-to: type=gha,mode=max
+
+      - name: Setup test db
+        env:
+          DATABASE_HOST: localhost
+        run: |
+          docker compose ps
+          pwd
+          docker container ls --format 'table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.State}}\t{{.Names}}\t{{.Networks}}'
+          bash ./scripts/setup-test-db.sh
+
+      - name: Run integration tests
+        working-directory: ./weather-change-aggregator
+        run: |
+          docker container run \
+            --network=host \
+            -e WA_WS_URL: "ws://weather-stream-simulator:8765" \
+            -e WA_HTTP_PORT: 3000 \
+            -e WA_HTTP_HOSTNAME: "0.0.0.0" \
+            -e WA_MONGODB_URL: "mongodb://mongo/weather-change-aggregator" \
+            -e WA_LOGGER_LEVEL: "info" \
+            -e WA_SYNC_MS: 20000 \
+            ${{ steps.build_dev.outputs.imageid }} npm run test
+
