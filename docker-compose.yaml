@@ -1,5 +1,5 @@
 services:
-  weather-frontend:
+  frontend.weather:
     build:
       context: ./weather-frontend
       dockerfile: Dockerfile
@@ -9,11 +9,9 @@ services:
     command: ["npm", "start"]
     networks:
       default: { ipv4_address: 10.23.1.0 }
-    depends_on:
-      - weather-change-aggregator
 
   # run under "https://app-hostname/next" path
-  weather-next:
+  next.weather:
     build:
       context: ./weather-next
       dockerfile: Dockerfile
@@ -22,10 +20,8 @@ services:
     command: ["npm", "run", "dev"]
     networks:
       default: { ipv4_address: 10.23.1.1 }
-    depends_on:
-      - weather-change-aggregator
 
-  weather-change-aggregator:
+  change-aggregator.weather:
     build:
       context: ./weather-change-aggregator
       dockerfile: Dockerfile
@@ -42,25 +38,75 @@ services:
     volumes:
       - ./weather-change-aggregator/src:/home/node/app/src
     depends_on:
-      - weather-stream-simulator
       - mongo
 
-  weather-stream-simulator:
+  driri:
+    build:
+      context: ./driri
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      WA_WS_URL: "ws://weather-stream-simulator:8765"
+    command: ["npm", "run", "start:dev"]
+    volumes:
+      - ./driri/src:/home/node/app/src
+
+  stream-simulator.weather:
     build:
       context: ./weather-stream-simulator
       dockerfile: Dockerfile
     command: npm start
 
-  mongo:
+  mongo.weather:
     init: true
     image: mongo:8-noble
     networks:
-      default: { ipv4_address: 10.23.0.10 }
+      default: { ipv4_address: 10.23.3.10 }
     volumes: [ "mongodb:/data/db", "mongodb-config:/data/configdb" ]
+
+  hasura.weather:
+    image: hasura/graphql-engine:latest
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/healthz" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    environment:
+#     HASURA_GRAPHQL_METADATA_DATABASE_URL: ${application_api_hasura__PG_DATABASE_URL}
+      HASURA_GRAPHQL_DATABASE_URL: 'postgres://postgres:postgres@postgres.weather:5432/postgres'
+#     PG_DATABASE_URL: ${application_api_hasura__PG_DATABASE_URL}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+#     HASURA_GRAPHQL_ADMIN_SECRET: ${application_api_hasura__HASURA_GRAPHQL_ADMIN_SECRET}
+#     HASURA_GRAPHQL_JWT_SECRET: '{ "type": "HS256", "key":"${application_api_hasura__HASURA_GRAPHQL_JWT_SECRET}"}'
+#     LOGIC_APP_URL: "http://application-api-kraken-service:3030"
+#     LOGIC_APP_TOKEN: ${application_api_kraken_service__API_TOKEN}
+    networks:
+      default: { ipv4_address: 10.23.3.20 }
+    depends_on:
+      - postgres.weather
+
+  postgres.weather:
+    labels: { "project": "weather", service: ww-postgres }
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGUSER: ${PGUSER:-postgres}
+      PGHOST: ${PGHOST:-postgres}
+      PGDATABASE: ${PGDATABASE:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-postgres}
+    volumes:
+      - weather_postgres:/var/lib/postgresql/data
+    networks:
+      default: { ipv4_address: 10.23.3.30 }
+
 
 volumes:
   mongodb:
   mongodb-config:
+  weather_postgres:
 
 networks:
   default:

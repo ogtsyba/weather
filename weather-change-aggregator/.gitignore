@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+*.incremental.json
+
 # Logs
 logs
 *.log
