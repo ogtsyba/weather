@@ -1,0 +1,6 @@
+CREATE TABLE article(
+  id SERIAL NOT NULL PRIMARY KEY,
+  title TEXT NOT NULL,
+  date DATE NOT NULL,
+  content TEXT NOT NULL
+);

@@ -1,3 +1,5 @@
+- "!include public_article.yaml"
+- "!include public_baba.yaml"
 - "!include public_identity.yaml"
 - "!include public_users.yaml"
 - "!include weather_weathers.yaml"
