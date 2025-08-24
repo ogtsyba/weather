@@ -1,0 +1,36 @@
+- comment: ""
+  definition:
+    query:
+      collection_name: allowed-queries
+      query_name: insert_weather_weathers_one
+  methods:
+    - POST
+  name: insert_weather_weathers_one
+  url: weathers
+- comment: ""
+  definition:
+    query:
+      collection_name: allowed-queries
+      query_name: weather_weathers_by_pk
+  methods:
+    - GET
+  name: weather_weathers_by_pk
+  url: weathers/:id
+- comment: ""
+  definition:
+    query:
+      collection_name: allowed-queries
+      query_name: update_weather_weathers_by_pk
+  methods:
+    - POST
+  name: update_weather_weathers_by_pk
+  url: weathers/:id
+- comment: ""
+  definition:
+    query:
+      collection_name: allowed-queries
+      query_name: delete_weather_weathers_by_pk
+  methods:
+    - DELETE
+  name: delete_weather_weathers_by_pk
+  url: weathers/:id
