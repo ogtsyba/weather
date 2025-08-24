@@ -1,1 +1,43 @@
-[]
+- name: allowed-queries
+  definition:
+    queries:
+      - name: weather_weathers_by_pk
+        query: |
+          query weather_weathers_by_pk ($id: uuid!) {
+            weather_weathers_by_pk(id: $id) {
+              city
+              day
+              id
+              temperature
+            }
+          }
+      - name: insert_weather_weathers_one
+        query: |
+          mutation insert_weather_weathers_one ($object: weather_weathers_insert_input!) {
+            insert_weather_weathers_one(object: $object) {
+              city
+              day
+              id
+              temperature
+            }
+          }
+      - name: update_weather_weathers_by_pk
+        query: |
+          mutation update_weather_weathers_by_pk ($id: uuid!, $object: weather_weathers_set_input!) {
+            update_weather_weathers_by_pk(pk_columns: {id:$id}, _set: $object) {
+              city
+              day
+              id
+              temperature
+            }
+          }
+      - name: delete_weather_weathers_by_pk
+        query: |
+          mutation delete_weather_weathers_by_pk ($id: uuid!) {
+            delete_weather_weathers_by_pk(id: $id) {
+              city
+              day
+              id
+              temperature
+            }
+          }

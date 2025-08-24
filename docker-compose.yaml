@@ -38,7 +38,7 @@ services:
     volumes:
       - ./weather-change-aggregator/src:/home/node/app/src
     depends_on:
-      - mongo
+      - mongo.weather
 
   driri:
     build:
