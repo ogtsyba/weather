@@ -6,3 +6,5 @@
 --   date DATE NOT NULL,
 --   content TEXT NOT NULL
 -- );
+
+drop table "public"."article";

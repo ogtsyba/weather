@@ -1,26 +1,222 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-    --background: #ffffff;
-    --foreground: #171717;
-}
+@layer base {
+    * {
+        @apply border-border;
+        font-family: 'Inter', sans-serif;
+    }
 
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-}
+    body {
+        @apply bg-background text-foreground;
+        /* Improved font rendering */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
+    @media (max-width: 767px) {
+        button, [role="button"], a, .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            @apply touch-manipulation;
+        }
+
+        /* Larger tap targets for interactive elements */
+        input, select, textarea {
+            min-height: 44px;
+            @apply touch-manipulation;
+        }
+
+        /* Improved spacing for mobile */
+        .mobile-spacing {
+            @apply space-y-4;
+        }
+
+        .mobile-padding {
+            @apply p-4;
+        }
+    }
+
+    /* Tablet optimizations */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .tablet-grid {
+            @apply grid-cols-2;
+        }
+    }
+
+    /* Improved focus states for accessibility */
+    *:focus-visible {
+        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Enhanced transitions */
+    * {
+        transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+
+    /* Utility classes for consistent responsive design */
+    .responsive-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6;
+    }
+
+    .responsive-text {
+        @apply text-sm sm:text-base;
+    }
+
+    .responsive-heading {
+        @apply text-xl sm:text-2xl lg:text-3xl;
+    }
+
+    .responsive-button {
+        @apply h-10 sm:h-9 px-4 sm:px-3 text-sm;
+    }
+
+    .mobile-card-spacing {
+        @apply p-4 sm:p-6;
+    }
+
+    /* Smooth hover effects that work well on touch devices */
+    .interactive-card {
+        @apply hover:shadow-lg active:scale-[0.98] transition-all duration-200 touch-manipulation;
+    }
+
+    /* Focus states optimized for keyboard navigation */
+    .focus-ring {
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
     }
 }
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+:root {
+    /* Light Mode: Background gradient from #ffffff to #e9e0f5 */
+    --background: oklch(1 0 0); /* #ffffff - pure white */
+    --background-gradient: linear-gradient(135deg, #ffffff 0%, #e9e0f5 100%);
+    --foreground: oklch(0.145 0 0); /* #121212 - dark text */
+
+    /* Widget/Card background: Pure white */
+    --card: oklch(1 0 0); /* #ffffff */
+    --card-foreground: oklch(0.145 0 0); /* #121212 */
+
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+
+    /* Primary: #2c78be */
+    --primary: oklch(0.552 0.152 247.8); /* #2c78be */
+    --primary-foreground: oklch(1 0 0); /* White text on primary */
+
+    /* Secondary: #d6c6ec */
+    --secondary: oklch(0.887 0.048 307.7); /* #d6c6ec */
+    --secondary-foreground: oklch(0.145 0 0); /* #121212 text on secondary */
+
+    --muted: oklch(0.97 0 0); /* Very light background */
+    --muted-foreground: oklch(0.556 0 0); /* Muted text */
+
+    /* Accent matches primary for consistency */
+    --accent: oklch(0.552 0.152 247.8); /* #2c78be */
+    --accent-foreground: oklch(1 0 0);
+
+    --destructive: oklch(0.577 0.245 27.325); /* Red for destructive actions */
+    --destructive-foreground: oklch(1 0 0);
+
+    --border: oklch(0.922 0 0); /* Light borders */
+    --input: oklch(0.922 0 0); /* Input borders */
+    --ring: oklch(0.552 0.152 247.8); /* Focus ring matches primary */
+
+    --radius: 0.5rem; /* Consistent border radius */
+
+    /* Invitation background gradient: #276baa to #8B67b7 */
+    --gradient-from: oklch(0.489 0.152 247.8); /* #276baa */
+    --gradient-to: oklch(0.653 0.118 307.7); /* #8B67b7 */
+    --invitation-gradient: linear-gradient(135deg, #276baa 0%, rgba(139, 103, 183, 0.8) 100%);
+
+    /* Hover state: #efeff1 */
+    --hover: oklch(0.942 0.002 247.8); /* #efeff1 */
+}
+
+/* Dark mode theme */
+.dark {
+    /* Dark Mode: Background #101119 */
+    --background: oklch(0.115 0.006 259.7); /* #101119 */
+    --background-gradient: linear-gradient(135deg, #101119 0%, #101119 100%); /* Solid dark background */
+    --foreground: oklch(0.953 0 0); /* #f3f3f3 - light text */
+
+    /* Widget/Card background: #212536 */
+    --card: oklch(0.176 0.014 259.7); /* #212536 */
+    --card-foreground: oklch(0.953 0 0); /* #f3f3f3 */
+
+    --popover: oklch(0.176 0.014 259.7); /* #212536 */
+    --popover-foreground: oklch(0.953 0 0);
+
+    /* Primary stays same: #2c78be */
+    --primary: oklch(0.552 0.152 247.8); /* #2c78be */
+    --primary-foreground: oklch(1 0 0);
+
+    /* Secondary: #54367d for dark mode */
+    --secondary: oklch(0.318 0.098 307.7); /* #54367d */
+    --secondary-foreground: oklch(0.953 0 0); /* #f3f3f3 */
+
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+
+    --accent: oklch(0.552 0.152 247.8); /* #2c78be */
+    --accent-foreground: oklch(1 0 0);
+
+    --destructive: oklch(0.704 0.191 22.216);
+    --destructive-foreground: oklch(1 0 0);
+
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.556 0 0);
+    --ring: oklch(0.556 0 0);
+
+    /* Invitation background gradient stays same: #276baa to #8B67b7 */
+    --gradient-from: oklch(0.489 0.152 247.8); /* #276baa */
+    --gradient-to: oklch(0.653 0.118 307.7); /* #8B67b7 */
+    --invitation-gradient: linear-gradient(135deg, #276baa 0%, rgba(139, 103, 183, 0.8) 100%);
+
+    /* Hover state: #2d4358 */
+    --hover: oklch(0.238 0.018 247.8); /* #2d4358 */
+}
+
+@theme {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: calc(var(--radius) * 0.5);
+    --radius-md: var(--radius);
+    --radius-lg: calc(var(--radius) * 1.5);
+    --radius-xl: calc(var(--radius) * 2);
+    --radius-2xl: calc(var(--radius) * 3);
+    --radius-full: 9999px;
+
+    /* Custom gradient utilities */
+    --color-gradient-from: var(--gradient-from);
+    --color-gradient-to: var(--gradient-to);
+    --color-hover: var(--hover);
+
+    /* Background gradients */
+    --background-gradient: var(--background-gradient);
+    --invitation-gradient: var(--invitation-gradient);
 }

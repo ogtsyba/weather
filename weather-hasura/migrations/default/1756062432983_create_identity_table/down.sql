@@ -5,3 +5,5 @@
 --     email varchar(64),
 --     name varchar(64)
 -- );
+
+drop table "public"."identity";
