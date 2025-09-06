@@ -1,3 +1,9 @@
+## CI
+
+https://github.com/google-github-actions/run-gemini-cli
+
+-----
+
 ## Structure of backend app
 
 * `__tests__` - e2e tests
@@ -8,6 +14,7 @@
 * `index.ts` - entry point for app
 * `run.ts` - run servers
 
+-----
 
 ## Project setup
 
@@ -20,7 +27,6 @@ EOF
 
 docker compose up --build
 ```
-
 
 To configure the Backend app settings, use env variables.
 You can modify them in `docker-compose.yaml`
@@ -35,6 +41,7 @@ You can modify them in `docker-compose.yaml`
 | `WA_LOGGER_LEVEL`  | `"info"`                                      |
 | `WA_SYNC_MS`       | `20000`                                       |
 
+-----
 
 ## Run backend tests
 
